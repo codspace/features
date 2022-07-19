@@ -415,8 +415,8 @@ function getFeaturesAndPackage(basePath, publishToNPM = false) {
                     const packageName = yield exec(`npm pack ./${featureFolder}`);
                     core.info(`GENERATED: ${packageName.stdout.toString()}`);
                     core.info(`ERR: ${packageName.stderr.toString()}`);
-                    const output2 = yield exec(`npm publish --access public "${packageName.stdout.toString()}"`);
-                    core.info(output2.stdout.toString() + " .... " + output2.stderr.toString());
+                    const output2 = yield exec(`npm publish --access public "${packageName.stdout.toString().trim()}"`);
+                    core.info(output2.stdout.toString() + ' .... ' + output2.stderr.toString());
                 }
                 // TODO: Old way, GitHub release
                 // await tarDirectory(featureFolder, archiveName);
