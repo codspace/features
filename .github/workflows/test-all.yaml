@@ -1,49 +1,49 @@
-name: "(CI) Test Features"
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+# name: "(CI) Test Features"
+# on:
+#   push:
+#     branches:
+#       - main
+#   workflow_dispatch:
 
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, 'no-ci') && !contains(github.event.head_commit.message, 'CI ignore')"
-    continue-on-error: true
-    strategy:
-      matrix:
-        features: [
-            "anaconda",
-            "aws-cli",
-            "azure-cli",
-            "common",
-            "desktop-lite",
-            "docker-from-docker",
-            "docker-in-docker",
-            "dotnet",
-            "git",
-            "git-lfs",
-            "github-cli",
-            "go",
-            "hugo",
-            "java",
-            "kubectl-helm-minikube",
-            "node",
-            "oryx",
-            "php",
-            "powershell",
-            "python",
-            "ruby",
-            "rust",
-            "sshd",
-            "terraform",
-          ]
-        baseImage: [ "ubuntu:focal", "ubuntu:jammy", "debian:11", "mcr.microsoft.com/vscode/devcontainers/base:ubuntu", "mcr.microsoft.com/vscode/devcontainers/base:debian" ]
-    steps:
-      - uses: actions/checkout@v2
+# jobs:
+#   test:
+#     runs-on: ubuntu-latest
+#     if: "!contains(github.event.head_commit.message, 'no-ci') && !contains(github.event.head_commit.message, 'CI ignore')"
+#     continue-on-error: true
+#     strategy:
+#       matrix:
+#         features: [
+#             "anaconda",
+#             "aws-cli",
+#             "azure-cli",
+#             "common",
+#             "desktop-lite",
+#             "docker-from-docker",
+#             "docker-in-docker",
+#             "dotnet",
+#             "git",
+#             "git-lfs",
+#             "github-cli",
+#             "go",
+#             "hugo",
+#             "java",
+#             "kubectl-helm-minikube",
+#             "node",
+#             "oryx",
+#             "php",
+#             "powershell",
+#             "python",
+#             "ruby",
+#             "rust",
+#             "sshd",
+#             "terraform",
+#           ]
+#         baseImage: [ "ubuntu:focal", "ubuntu:jammy", "debian:11", "mcr.microsoft.com/vscode/devcontainers/base:ubuntu", "mcr.microsoft.com/vscode/devcontainers/base:debian" ]
+#     steps:
+#       - uses: actions/checkout@v2
 
-      - name: "Install latest devcontainer CLI"
-        run: npm install -g @devcontainers/cli
+#       - name: "Install latest devcontainer CLI"
+#         run: npm install -g @devcontainers/cli
 
-      - name: " Testing '${{ matrix.features }}' against '${{ matrix.baseImage }}'"
-        run: devcontainer features test -f ${{ matrix.features }} -i ${{ matrix.baseImage }} -c `pwd`
+#       - name: " Testing '${{ matrix.features }}' against '${{ matrix.baseImage }}'"
+#         run: devcontainer features test -f ${{ matrix.features }} -i ${{ matrix.baseImage }} -c `pwd`
