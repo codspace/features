@@ -2,7 +2,7 @@ name: "(Release) Release dev container features (v2)"
 on:
   push:
     tags:
-      - "v*"
+      - "*"
   workflow_dispatch:
 
 jobs:
