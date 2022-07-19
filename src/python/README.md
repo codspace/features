@@ -7,7 +7,7 @@ Installs the provided version of Python, as well as PIPX, and other common Pytho
 
 ```json
 "features": {
-        "devcontainers/features/python@latest": {
+        "codspace/features/python@latest": {
             "version": "latest"
         }
 }

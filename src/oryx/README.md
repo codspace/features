@@ -7,7 +7,7 @@ Installs the oryx CLI
 
 ```json
 "features": {
-        "devcontainers/features/oryx@latest": {
+        "codspace/features/oryx@latest": {
             "version": "latest"
         }
 }

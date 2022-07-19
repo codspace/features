@@ -7,7 +7,7 @@ Installs Git Large File Support (Git LFS) along with needed dependencies. Useful
 
 ```json
 "features": {
-        "devcontainers/features/git-lfs@latest": {
+        "codspace/features/git-lfs@latest": {
             "version": "latest"
         }
 }

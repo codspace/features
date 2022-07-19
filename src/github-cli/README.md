@@ -7,7 +7,7 @@ Installs the GitHub CLI. Auto-detects latest version and installs needed depende
 
 ```json
 "features": {
-        "devcontainers/features/github-cli@latest": {
+        "codspace/features/github-cli@latest": {
             "version": "latest"
         }
 }

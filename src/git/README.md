@@ -7,7 +7,7 @@ Install an up-to-date version of Git, built from source as needed. Useful for wh
 
 ```json
 "features": {
-        "devcontainers/features/git@latest": {
+        "codspace/features/git@latest": {
             "version": "latest"
         }
 }

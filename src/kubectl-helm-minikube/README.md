@@ -7,7 +7,7 @@ Installs latest version of kubectl, Helm, and optionally minikube. Auto-detects 
 
 ```json
 "features": {
-        "devcontainers/features/kubectl-helm-minikube@latest": {
+        "codspace/features/kubectl-helm-minikube@latest": {
             "version": "latest"
         }
 }
