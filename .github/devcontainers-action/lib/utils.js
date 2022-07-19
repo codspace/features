@@ -120,18 +120,18 @@ function getFeaturesAndPackage(basePath, publishToNPM = false) {
                         core.setFailed('All features published to NPM must be tagged with a version');
                     }
                     const packageJsonObject = {
-                        "name": `$@{sourceInfo.owner}/${sourceInfo.repo}-${f}`,
-                        "version": `${sourceInfo.tag}`,
-                        "description": `${(_a = featureMetadata.description) !== null && _a !== void 0 ? _a : "My cool feature"}`,
-                        "repository": {
-                            "type": "git",
-                            "url": `https://github.com/${sourceInfo.owner}/${sourceInfo.repo}.git`
+                        name: `@${sourceInfo.owner}/${sourceInfo.repo}-${f}`,
+                        version: `${sourceInfo.tag}`,
+                        description: `${(_a = featureMetadata.description) !== null && _a !== void 0 ? _a : 'My cool feature'}`,
+                        repository: {
+                            type: 'git',
+                            url: `https://github.com/${sourceInfo.owner}/${sourceInfo.repo}.git`
                         },
-                        "author": `${sourceInfo.owner}`,
+                        author: `${sourceInfo.owner}`
                     };
                     yield (0, exports.writeLocalFile)(packageJsonPath, JSON.stringify(packageJsonObject, undefined, 4));
                 }
-                const archiveName = `{sourceInfo.owner}-${sourceInfo.repo}-${f}.tgz`; // TODO: changed this!
+                const archiveName = `${sourceInfo.owner}-${sourceInfo.repo}-${f}.tgz`; // TODO: changed this!
                 yield tarDirectory(featureFolder, archiveName);
                 // Publish to NPM, if required
                 if (publishToNPM) {
