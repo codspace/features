@@ -35,9 +35,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTemplatesAndPackage = exports.getFeaturesAndPackage = exports.addCollectionsMetadataFile = exports.tarDirectory = exports.renameLocal = exports.mkdirLocal = exports.writeLocalFile = exports.readLocalFile = void 0;
+exports.getTemplatesAndPackage = exports.getFeaturesAndPackage = exports.addCollectionsMetadataFile = exports.renameLocal = exports.mkdirLocal = exports.writeLocalFile = exports.readLocalFile = void 0;
 const github = __importStar(require("@actions/github"));
-const tar = __importStar(require("tar"));
+// import * as tar from 'tar';
 const fs = __importStar(require("fs"));
 const core = __importStar(require("@actions/core"));
 const child_process = __importStar(require("child_process"));
@@ -48,21 +48,18 @@ exports.writeLocalFile = (0, util_1.promisify)(fs.writeFile);
 exports.mkdirLocal = (0, util_1.promisify)(fs.mkdir);
 exports.renameLocal = (0, util_1.promisify)(fs.rename);
 // Filter what gets included in the tar.c
-const filter = (file, _) => {
-    // Don't include the archive itself.
-    if (file === './devcontainer-features.tgz') {
-        return false;
-    }
-    return true;
-};
-function tarDirectory(path, tgzName) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return tar.create({ file: tgzName, C: path, filter }, ['.']).then(_ => {
-            core.info(`Compressed ${path} directory to file ${tgzName}`);
-        });
-    });
-}
-exports.tarDirectory = tarDirectory;
+// const filter = (file: string, _: tar.FileStat) => {
+//     // Don't include the archive itself.
+//     if (file === './devcontainer-features.tgz') {
+//         return false;
+//     }
+//     return true;
+// };
+// export async function tarDirectory(path: string, tgzName: string) {
+//     return tar.create({ file: tgzName, C: path, filter }, ['.']).then(_ => {
+//         core.info(`Compressed ${path} directory to file ${tgzName}`);
+//     });
+// }
 function getSourceInfo() {
     // Insert github repo metadata
     const ref = github.context.ref;
@@ -113,8 +110,8 @@ function getFeaturesAndPackage(basePath, publishToNPM = false) {
                 metadatas.push(featureMetadata);
                 const sourceInfo = getSourceInfo();
                 // Adds a package.json file to the feature folder
+                const packageJsonPath = path_1.default.join(featureFolder, 'package.json');
                 if (publishToNPM) {
-                    const packageJsonPath = path_1.default.join(featureFolder, 'package.json');
                     if (!sourceInfo.tag) {
                         core.error(`Feature ${f} is missing a tag! Cannot publish to NPM.`);
                         core.setFailed('All features published to NPM must be tagged with a version');
@@ -130,14 +127,14 @@ function getFeaturesAndPackage(basePath, publishToNPM = false) {
                         author: `${sourceInfo.owner}`
                     };
                     yield (0, exports.writeLocalFile)(packageJsonPath, JSON.stringify(packageJsonObject, undefined, 4));
+                    // const tarData = await pac.tarball(featureFolder);
+                    const archiveName = `${sourceInfo.owner}-${sourceInfo.repo}-${f}.tgz`; // TODO: changed this!
+                    yield (0, exports.writeLocalFile)(archiveName, Buffer.from('aa'));
+                    const output = child_process.execSync(`npm publish ${featureFolder} --access public`);
+                    core.info(output.toString());
                 }
-                const archiveName = `${sourceInfo.owner}-${sourceInfo.repo}-${f}.tgz`; // TODO: changed this!
-                yield tarDirectory(featureFolder, archiveName);
-                // Publish to NPM, if required
-                if (publishToNPM) {
-                    const output = child_process.execSync(`npm publish ${archiveName} --access public`);
-                    core.info(output.toString()); // TODO: make prettier
-                }
+                // TODO: Old way, GitHub release
+                // await tarDirectory(featureFolder, archiveName);
             }
         })));
         if (metadatas.length === 0) {
@@ -157,7 +154,7 @@ function getTemplatesAndPackage(basePath) {
             if (!t.startsWith('.')) {
                 const templateFolder = path_1.default.join(basePath, t);
                 const archiveName = `devcontainer-template-${t}.tgz`;
-                yield tarDirectory(templateFolder, archiveName);
+                // await tarDirectory(templateFolder, archiveName);
                 const templateJsonPath = path_1.default.join(templateFolder, 'devcontainer-template.json');
                 if (!fs.existsSync(templateJsonPath)) {
                     core.error(`Template '${t}' is missing a devcontainer-template.json`);
