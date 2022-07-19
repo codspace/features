@@ -7,7 +7,7 @@ Installs the Azure CLI along with needed dependencies. Useful for base Dockerfil
 
 ```json
 "features": {
-        "devcontainers/features/azure-cli@latest": {
+        "codspace/features/azure-cli@latest": {
             "version": "latest"
         }
 }

@@ -7,7 +7,7 @@ Installs Rust, common Rust utilities, and their required dependencies
 
 ```json
 "features": {
-        "devcontainers/features/rust@latest": {
+        "codspace/features/rust@latest": {
             "version": "latest"
         }
 }

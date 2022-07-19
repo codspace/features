@@ -7,7 +7,7 @@ Adds a lightweight Fluxbox based desktop to the container that can be accessed u
 
 ```json
 "features": {
-        "devcontainers/features/desktop-lite@latest": {
+        "codspace/features/desktop-lite@latest": {
             "version": "latest"
         }
 }

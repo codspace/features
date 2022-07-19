@@ -7,7 +7,7 @@
 
 ```json
 "features": {
-        "devcontainers/features/anaconda@latest": {
+        "codspace/features/anaconda@latest": {
             "version": "latest"
         }
 }

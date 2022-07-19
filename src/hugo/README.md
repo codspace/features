@@ -7,7 +7,7 @@
 
 ```json
 "features": {
-        "devcontainers/features/hugo@latest": {
+        "codspace/features/hugo@latest": {
             "version": "latest"
         }
 }

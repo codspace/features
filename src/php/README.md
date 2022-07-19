@@ -7,7 +7,7 @@
 
 ```json
 "features": {
-        "devcontainers/features/php@latest": {
+        "codspace/features/php@latest": {
             "version": "latest"
         }
 }
