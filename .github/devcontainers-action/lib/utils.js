@@ -112,6 +112,7 @@ function getFeaturesAndPackage(basePath, publishToNPM = false) {
                 // Adds a package.json file to the feature folder
                 const packageJsonPath = path_1.default.join(featureFolder, 'package.json');
                 if (publishToNPM) {
+                    core.info(`Publishing to NPM`);
                     if (!sourceInfo.tag) {
                         core.error(`Feature ${f} is missing a tag! Cannot publish to NPM.`);
                         core.setFailed('All features published to NPM must be tagged with a version');
@@ -129,7 +130,8 @@ function getFeaturesAndPackage(basePath, publishToNPM = false) {
                     yield (0, exports.writeLocalFile)(packageJsonPath, JSON.stringify(packageJsonObject, undefined, 4));
                     // const tarData = await pac.tarball(featureFolder);
                     // const archiveName = `${sourceInfo.owner}-${sourceInfo.repo}-${f}.tgz`; // TODO: changed this!
-                    const packageName = child_process.execSync(`npm pack ${featureFolder}`);
+                    core.info(`Feature Folder is: ${featureFolder}`);
+                    const packageName = child_process.execSync(`npm pack ./${featureFolder}`);
                     core.info(`GENERATED: ${packageName.toString()}`);
                     const output2 = child_process.execSync(`npm publish ${packageName} --access public`);
                     core.info(output2.toString());

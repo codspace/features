@@ -54,6 +54,7 @@ function run() {
         // -- Package Release Artifacts
         if (shouldPublishFeatures) {
             core.info('Publishing features...');
+            core.info(`Publishing to npm? --> ${shouldPublishToNPM}`);
             featuresMetadata = yield packageFeatures(featuresBasePath, shouldPublishToNPM);
         }
         if (shouldPublishTemplates) {
