@@ -2,7 +2,7 @@ name: "(Release) Release dev container features (v2)"
 on:
   push:
     tags:
-      - "v0.0.2"
+      - "v*"
   workflow_dispatch:
 
 jobs:
@@ -11,11 +11,21 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Generate tgz
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '16.x'
+          registry-url: 'https://registry.npmjs.org'
+          scope: '@codspace'
+
+      - name: "Generate tgz and publish to NPM"
         uses: ./.github/devcontainers-action # TODO: Once 'devcontainers/action' is published, use that.
         with:
           publish-features: "true"
+          publish-to-npm: "true" # EXPERIMENTAL!
           base-path-to-features: "./src"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_CREDENTIAL }}
       
       - name: Remove temporary devcontainer-cli # TODO: Temporary
         run: rm -rf ./devcontainer-cli-0*

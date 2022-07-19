@@ -39,95 +39,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.generateFeaturesDocumentation = void 0;
+exports.generateTemplateDocumentation = exports.generateFeaturesDocumentation = void 0;
 const fs = __importStar(__nccwpck_require__(7147));
 const github = __importStar(__nccwpck_require__(5438));
 const core = __importStar(__nccwpck_require__(2186));
 const path = __importStar(__nccwpck_require__(1017));
-function generateFeaturesDocumentation(basePath) {
-    return __awaiter(this, void 0, void 0, function* () {
-        fs.readdir(basePath, (err, files) => {
-            if (err) {
-                core.error(err.message);
-                core.setFailed(`failed to generate 'features' documentation ${err.message}`);
-                return;
-            }
-            files.forEach(f => {
-                core.info(`Generating docs for feature '${f}'`);
-                if (f !== '.' && f !== '..') {
-                    const readmePath = path.join(basePath, f, 'README.md');
-                    // Reads in feature.json
-                    const featureJsonPath = path.join(basePath, f, 'devcontainer-feature.json');
-                    if (!fs.existsSync(featureJsonPath)) {
-                        core.error(`devcontainer-feature.json not found at path '${featureJsonPath}'`);
-                        return;
-                    }
-                    let featureJson = undefined;
-                    try {
-                        featureJson = JSON.parse(fs.readFileSync(featureJsonPath, 'utf8'));
-                    }
-                    catch (err) {
-                        core.error(`Failed to parse ${featureJsonPath}: ${err}`);
-                        return;
-                    }
-                    if (!featureJson || !(featureJson === null || featureJson === void 0 ? void 0 : featureJson.id)) {
-                        core.error(`devcontainer-feature.json for feature '${f}' does not contain an 'id'`);
-                        return;
-                    }
-                    const ref = github.context.ref;
-                    const owner = github.context.repo.owner;
-                    const repo = github.context.repo.repo;
-                    // Add tag if parseable
-                    let versionTag = 'latest';
-                    if (ref.includes('refs/tags/')) {
-                        versionTag = ref.replace('refs/tags/', '');
-                    }
-                    const generateOptionsMarkdown = () => {
-                        const options = featureJson === null || featureJson === void 0 ? void 0 : featureJson.options;
-                        if (!options) {
-                            return '';
-                        }
-                        const keys = Object.keys(options);
-                        const contents = keys
-                            .map(k => {
-                            const val = options[k];
-                            return `| ${k} | ${val.description || '-'} | ${val.type || '-'} | ${val.default || '-'} |`;
-                        })
-                            .join('\n');
-                        return ('| Options Id | Description | Type | Default Value |\n' +
-                            '|-----|-----|-----|-----|\n' +
-                            contents);
-                    };
-                    const newReadme = README_TEMPLATE.replace('#{nwo}', `${owner}/${repo}`)
-                        .replace('#{versionTag}', versionTag)
-                        .replace('#{featureId}', featureJson.id)
-                        .replace('#{featureName}', featureJson.name
-                        ? `${featureJson.name} (${featureJson.id})`
-                        : `${featureJson.id}`)
-                        .replace('#{featureDescription}', featureJson.description ? featureJson.description : '')
-                        .replace('#{optionsTable}', generateOptionsMarkdown());
-                    // Remove previous readme
-                    if (fs.existsSync(readmePath)) {
-                        fs.unlinkSync(readmePath);
-                    }
-                    // Write new readme
-                    fs.writeFileSync(readmePath, newReadme);
-                }
-            });
-        });
-    });
-}
-exports.generateFeaturesDocumentation = generateFeaturesDocumentation;
-const README_TEMPLATE = `
-# #{featureName}
+const FEATURES_README_TEMPLATE = `
+# #{Name}
 
-#{featureDescription}
+#{Description}
 
 ## Example Usage
 
 \`\`\`json
 "features": {
-        "#{nwo}/#{featureId}@#{versionTag}": {
+        "#{Nwo}/#{Id}@#{VersionTag}": {
             "version": "latest"
         }
 }
@@ -135,12 +61,101 @@ const README_TEMPLATE = `
 
 ## Options
 
-#{optionsTable}
+#{OptionsTable}
 
 ---
 
 _Note: This file was auto-generated from the [devcontainer-feature.json](./devcontainer-feature.json)._
 `;
+const TEMPLATE_README_TEMPLATE = `
+# #{Name}
+
+#{Description}
+
+## Options
+
+#{OptionsTable}
+`;
+function generateFeaturesDocumentation(basePath) {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield _generateDocumentation(basePath, FEATURES_README_TEMPLATE, 'devcontainer-feature.json');
+    });
+}
+exports.generateFeaturesDocumentation = generateFeaturesDocumentation;
+function generateTemplateDocumentation(basePath) {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield _generateDocumentation(basePath, TEMPLATE_README_TEMPLATE, 'devcontainer-template.json');
+    });
+}
+exports.generateTemplateDocumentation = generateTemplateDocumentation;
+function _generateDocumentation(basePath, readmeTemplate, metadataFile) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const directories = fs.readdirSync(basePath);
+        yield Promise.all(directories.map((f) => __awaiter(this, void 0, void 0, function* () {
+            var _a, _b, _c;
+            if (!f.startsWith('.')) {
+                const readmePath = path.join(basePath, f, 'README.md');
+                // Reads in feature.json
+                const jsonPath = path.join(basePath, f, metadataFile);
+                if (!fs.existsSync(jsonPath)) {
+                    core.error(`${metadataFile} not found at path '${jsonPath}'`);
+                    return;
+                }
+                let parsedJson = undefined;
+                try {
+                    parsedJson = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+                }
+                catch (err) {
+                    core.error(`Failed to parse ${jsonPath}: ${err}`);
+                    return;
+                }
+                if (!parsedJson || !(parsedJson === null || parsedJson === void 0 ? void 0 : parsedJson.id)) {
+                    core.error(`${metadataFile} for '${f}' does not contain an 'id'`);
+                    return;
+                }
+                const ref = github.context.ref;
+                const owner = github.context.repo.owner;
+                const repo = github.context.repo.repo;
+                // Add tag if parseable
+                let versionTag = 'latest';
+                if (ref.includes('refs/tags/')) {
+                    versionTag = ref.replace('refs/tags/', '');
+                }
+                const generateOptionsMarkdown = () => {
+                    const options = parsedJson === null || parsedJson === void 0 ? void 0 : parsedJson.options;
+                    if (!options) {
+                        return '';
+                    }
+                    const keys = Object.keys(options);
+                    const contents = keys
+                        .map(k => {
+                        const val = options[k];
+                        return `| ${k} | ${val.description || '-'} | ${val.type || '-'} | ${val.default || '-'} |`;
+                    })
+                        .join('\n');
+                    return '| Options Id | Description | Type | Default Value |\n' + '|-----|-----|-----|-----|\n' + contents;
+                };
+                const newReadme = readmeTemplate
+                    // Templates & Features
+                    .replace('#{Id}', parsedJson.id)
+                    .replace('#{Name}', parsedJson.name ? `${parsedJson.name} (${parsedJson.id})` : `${parsedJson.id}`)
+                    .replace('#{Description}', (_a = parsedJson.description) !== null && _a !== void 0 ? _a : '')
+                    .replace('#{OptionsTable}', generateOptionsMarkdown())
+                    // Features Only
+                    .replace('#{Nwo}', `${owner}/${repo}`)
+                    .replace('#{VersionTag}', versionTag)
+                    // Templates Only
+                    .replace('#{ManifestName}', (_c = (_b = parsedJson === null || parsedJson === void 0 ? void 0 : parsedJson.image) === null || _b === void 0 ? void 0 : _b.manifest) !== null && _c !== void 0 ? _c : '');
+                // Remove previous readme
+                if (fs.existsSync(readmePath)) {
+                    fs.unlinkSync(readmePath);
+                }
+                // Write new readme
+                fs.writeFileSync(readmePath, newReadme);
+            }
+        })));
+    });
+}
 
 
 /***/ }),
@@ -195,42 +210,41 @@ function run() {
         core.debug('Reading input parameters...');
         // Read inputs
         const shouldPublishFeatures = core.getInput('publish-features').toLowerCase() === 'true';
-        const shouldPublishTemplate = core.getInput('publish-templates').toLowerCase() === 'true';
+        const shouldPublishTemplates = core.getInput('publish-templates').toLowerCase() === 'true';
         const shouldGenerateDocumentation = core.getInput('generate-docs').toLowerCase() === 'true';
+        const shouldPublishToNPM = core.getInput('publish-to-npm').toLowerCase() === 'true';
+        const featuresBasePath = core.getInput('base-path-to-features');
+        const templatesBasePath = core.getInput('base-path-to-templates');
         let featuresMetadata = undefined;
         let templatesMetadata = undefined;
+        // -- Package Release Artifacts
         if (shouldPublishFeatures) {
             core.info('Publishing features...');
-            const featuresBasePath = core.getInput('base-path-to-features');
-            featuresMetadata = yield packageFeatures(featuresBasePath);
+            featuresMetadata = yield packageFeatures(featuresBasePath, shouldPublishToNPM);
         }
-        if (shouldPublishTemplate) {
+        if (shouldPublishTemplates) {
             core.info('Publishing template...');
-            const basePathToDefinitions = core.getInput('base-path-to-templates');
-            templatesMetadata = undefined; // TODO
-            yield packageTemplates(basePathToDefinitions);
+            templatesMetadata = yield packageTemplates(templatesBasePath);
         }
-        if (shouldGenerateDocumentation) {
-            core.info('Generating documentation...');
-            const featuresBasePath = core.getInput('base-path-to-features');
-            if (featuresBasePath) {
-                yield (0, generateDocs_1.generateFeaturesDocumentation)(featuresBasePath);
-            }
-            else {
-                core.error("'base-path-to-features' input is required to generate documentation");
-            }
-            // TODO: base-path-to-templates
+        // -- Generate Documentation
+        if (shouldGenerateDocumentation && featuresBasePath) {
+            core.info('Generating documentation for features...');
+            yield (0, generateDocs_1.generateFeaturesDocumentation)(featuresBasePath);
         }
-        // TODO: Programatically add feature/template fino with relevant metadata for UX clients.
-        core.info('Generation metadata file: devcontainer-collection.json');
+        if (shouldGenerateDocumentation && templatesBasePath) {
+            core.info('Generating documentation for templates...');
+            yield (0, generateDocs_1.generateTemplateDocumentation)(templatesBasePath);
+        }
+        // -- Programatically add feature/template metadata to collections file.
+        core.info('Generating metadata file: devcontainer-collection.json');
         yield (0, utils_1.addCollectionsMetadataFile)(featuresMetadata, templatesMetadata);
     });
 }
-function packageFeatures(basePath) {
+function packageFeatures(basePath, publishToNpm = false) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             core.info(`Archiving all features in ${basePath}`);
-            const metadata = yield (0, utils_1.getFeaturesAndPackage)(basePath);
+            const metadata = yield (0, utils_1.getFeaturesAndPackage)(basePath, publishToNpm);
             core.info('Packaging features has finished.');
             return metadata;
         }
@@ -245,14 +259,17 @@ function packageFeatures(basePath) {
 function packageTemplates(basePath) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            core.info(`Archiving all templated in ${basePath}`);
-            yield (0, utils_1.getTemplatesAndPackage)(basePath);
+            core.info(`Archiving all templates in ${basePath}`);
+            const metadata = yield (0, utils_1.getTemplatesAndPackage)(basePath);
             core.info('Packaging templates has finished.');
+            return metadata;
         }
         catch (error) {
-            if (error instanceof Error)
+            if (error instanceof Error) {
                 core.setFailed(error.message);
+            }
         }
+        return;
     });
 }
 run();
@@ -306,6 +323,7 @@ const github = __importStar(__nccwpck_require__(5438));
 const tar = __importStar(__nccwpck_require__(4674));
 const fs = __importStar(__nccwpck_require__(7147));
 const core = __importStar(__nccwpck_require__(2186));
+const child_process = __importStar(__nccwpck_require__(2081));
 const util_1 = __nccwpck_require__(3837);
 const path_1 = __importDefault(__nccwpck_require__(1017));
 exports.readLocalFile = (0, util_1.promisify)(fs.readFile);
@@ -328,23 +346,27 @@ function tarDirectory(path, tgzName) {
     });
 }
 exports.tarDirectory = tarDirectory;
+function getSourceInfo() {
+    // Insert github repo metadata
+    const ref = github.context.ref;
+    let sourceInformation = {
+        source: 'github',
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+        ref,
+        sha: github.context.sha
+    };
+    // Add tag if parseable
+    if (ref.includes('refs/tags/')) {
+        const tag = ref.replace('refs/tags/', '');
+        sourceInformation = Object.assign(Object.assign({}, sourceInformation), { tag });
+    }
+    return sourceInformation;
+}
 function addCollectionsMetadataFile(featuresMetadata, templatesMetadata) {
     return __awaiter(this, void 0, void 0, function* () {
         const p = path_1.default.join('.', 'devcontainer-collection.json');
-        // Insert github repo metadata
-        const ref = github.context.ref;
-        let sourceInformation = {
-            source: 'github',
-            owner: github.context.repo.owner,
-            repo: github.context.repo.repo,
-            ref,
-            sha: github.context.sha
-        };
-        // Add tag if parseable
-        if (ref.includes('refs/tags/')) {
-            const tag = ref.replace('refs/tags/', '');
-            sourceInformation = Object.assign(Object.assign({}, sourceInformation), { tag });
-        }
+        const sourceInformation = getSourceInfo();
         const metadata = {
             sourceInformation,
             features: featuresMetadata || [],
@@ -355,24 +377,50 @@ function addCollectionsMetadataFile(featuresMetadata, templatesMetadata) {
     });
 }
 exports.addCollectionsMetadataFile = addCollectionsMetadataFile;
-function getFeaturesAndPackage(basePath) {
+function getFeaturesAndPackage(basePath, publishToNPM = false) {
     return __awaiter(this, void 0, void 0, function* () {
         const featureDirs = fs.readdirSync(basePath);
         let metadatas = [];
         yield Promise.all(featureDirs.map((f) => __awaiter(this, void 0, void 0, function* () {
+            var _a;
             core.info(`feature ==> ${f}`);
-            if (f !== '.' && f !== '..') {
+            if (!f.startsWith('.')) {
                 const featureFolder = path_1.default.join(basePath, f);
-                const archiveName = `${f}.tgz`;
-                yield tarDirectory(`${basePath}/${f}`, archiveName);
                 const featureJsonPath = path_1.default.join(featureFolder, 'devcontainer-feature.json');
                 if (!fs.existsSync(featureJsonPath)) {
-                    core.error(`Feature ${f} is missing a devcontainer-feature.json`);
+                    core.error(`Feature '${f}' is missing a devcontainer-feature.json`);
                     core.setFailed('All features must have a devcontainer-feature.json');
                     return;
                 }
                 const featureMetadata = JSON.parse(fs.readFileSync(featureJsonPath, 'utf8'));
                 metadatas.push(featureMetadata);
+                const sourceInfo = getSourceInfo();
+                // Adds a package.json file to the feature folder
+                if (publishToNPM) {
+                    const packageJsonPath = path_1.default.join(featureFolder, 'package.json');
+                    if (!sourceInfo.tag) {
+                        core.error(`Feature ${f} is missing a tag! Cannot publish to NPM.`);
+                        core.setFailed('All features published to NPM must be tagged with a version');
+                    }
+                    const packageJsonObject = {
+                        "name": `$@{sourceInfo.owner}/${sourceInfo.repo}-${f}`,
+                        "version": `${sourceInfo.tag}`,
+                        "description": `${(_a = featureMetadata.description) !== null && _a !== void 0 ? _a : "My cool feature"}`,
+                        "repository": {
+                            "type": "git",
+                            "url": `https://github.com/${sourceInfo.owner}/${sourceInfo.repo}.git`
+                        },
+                        "author": `${sourceInfo.owner}`,
+                    };
+                    yield (0, exports.writeLocalFile)(packageJsonPath, JSON.stringify(packageJsonObject, undefined, 4));
+                }
+                const archiveName = `{sourceInfo.owner}-${sourceInfo.repo}-${f}.tgz`; // TODO: changed this!
+                yield tarDirectory(featureFolder, archiveName);
+                // Publish to NPM, if required
+                if (publishToNPM) {
+                    const output = child_process.execSync(`npm publish ${archiveName} --access public`);
+                    core.info(output.toString()); // TODO: make prettier
+                }
             }
         })));
         if (metadatas.length === 0) {
@@ -385,23 +433,29 @@ function getFeaturesAndPackage(basePath) {
 exports.getFeaturesAndPackage = getFeaturesAndPackage;
 function getTemplatesAndPackage(basePath) {
     return __awaiter(this, void 0, void 0, function* () {
-        let archives = [];
-        fs.readdir(basePath, (err, files) => {
-            if (err) {
-                core.error(err.message);
-                core.setFailed(`failed to get list of templates: ${err.message}`);
-                return;
-            }
-            files.forEach(file => {
-                core.info(`template ==> ${file}`);
-                if (file !== '.' && file !== '..') {
-                    const archiveName = `devcontainer-definition-${file}.tgz`;
-                    tarDirectory(`${basePath}/${file}`, archiveName);
-                    archives.push(archiveName);
+        const templateDirs = fs.readdirSync(basePath);
+        let metadatas = [];
+        yield Promise.all(templateDirs.map((t) => __awaiter(this, void 0, void 0, function* () {
+            core.info(`template ==> ${t}`);
+            if (!t.startsWith('.')) {
+                const templateFolder = path_1.default.join(basePath, t);
+                const archiveName = `devcontainer-template-${t}.tgz`;
+                yield tarDirectory(templateFolder, archiveName);
+                const templateJsonPath = path_1.default.join(templateFolder, 'devcontainer-template.json');
+                if (!fs.existsSync(templateJsonPath)) {
+                    core.error(`Template '${t}' is missing a devcontainer-template.json`);
+                    core.setFailed('All templates must have a devcontainer-template.json');
+                    return;
                 }
-            });
-        });
-        return archives;
+                const templateMetadata = JSON.parse(fs.readFileSync(templateJsonPath, 'utf8'));
+                metadatas.push(templateMetadata);
+            }
+        })));
+        if (metadatas.length === 0) {
+            core.setFailed('No templates found');
+            return;
+        }
+        return metadatas;
     });
 }
 exports.getTemplatesAndPackage = getTemplatesAndPackage;
@@ -3231,7 +3285,7 @@ exports.endpoint = endpoint;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 
-var request = __nccwpck_require__(3758);
+var request = __nccwpck_require__(6234);
 var universalUserAgent = __nccwpck_require__(5030);
 
 const VERSION = "4.8.0";
@@ -3344,191 +3398,6 @@ function withCustomRequest(customRequest) {
 exports.GraphqlResponseError = GraphqlResponseError;
 exports.graphql = graphql$1;
 exports.withCustomRequest = withCustomRequest;
-//# sourceMappingURL=index.js.map
-
-
-/***/ }),
-
-/***/ 3758:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-
-function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
-
-var endpoint = __nccwpck_require__(9440);
-var universalUserAgent = __nccwpck_require__(5030);
-var isPlainObject = __nccwpck_require__(3287);
-var nodeFetch = _interopDefault(__nccwpck_require__(467));
-var requestError = __nccwpck_require__(537);
-
-const VERSION = "5.6.2";
-
-function getBufferResponse(response) {
-  return response.arrayBuffer();
-}
-
-function fetchWrapper(requestOptions) {
-  const log = requestOptions.request && requestOptions.request.log ? requestOptions.request.log : console;
-
-  if (isPlainObject.isPlainObject(requestOptions.body) || Array.isArray(requestOptions.body)) {
-    requestOptions.body = JSON.stringify(requestOptions.body);
-  }
-
-  let headers = {};
-  let status;
-  let url;
-  const fetch = requestOptions.request && requestOptions.request.fetch || nodeFetch;
-  return fetch(requestOptions.url, Object.assign({
-    method: requestOptions.method,
-    body: requestOptions.body,
-    headers: requestOptions.headers,
-    redirect: requestOptions.redirect
-  }, // `requestOptions.request.agent` type is incompatible
-  // see https://github.com/octokit/types.ts/pull/264
-  requestOptions.request)).then(async response => {
-    url = response.url;
-    status = response.status;
-
-    for (const keyAndValue of response.headers) {
-      headers[keyAndValue[0]] = keyAndValue[1];
-    }
-
-    if ("deprecation" in headers) {
-      const matches = headers.link && headers.link.match(/<([^>]+)>; rel="deprecation"/);
-      const deprecationLink = matches && matches.pop();
-      log.warn(`[@octokit/request] "${requestOptions.method} ${requestOptions.url}" is deprecated. It is scheduled to be removed on ${headers.sunset}${deprecationLink ? `. See ${deprecationLink}` : ""}`);
-    }
-
-    if (status === 204 || status === 205) {
-      return;
-    } // GitHub API returns 200 for HEAD requests
-
-
-    if (requestOptions.method === "HEAD") {
-      if (status < 400) {
-        return;
-      }
-
-      throw new requestError.RequestError(response.statusText, status, {
-        response: {
-          url,
-          status,
-          headers,
-          data: undefined
-        },
-        request: requestOptions
-      });
-    }
-
-    if (status === 304) {
-      throw new requestError.RequestError("Not modified", status, {
-        response: {
-          url,
-          status,
-          headers,
-          data: await getResponseData(response)
-        },
-        request: requestOptions
-      });
-    }
-
-    if (status >= 400) {
-      const data = await getResponseData(response);
-      const error = new requestError.RequestError(toErrorMessage(data), status, {
-        response: {
-          url,
-          status,
-          headers,
-          data
-        },
-        request: requestOptions
-      });
-      throw error;
-    }
-
-    return getResponseData(response);
-  }).then(data => {
-    return {
-      status,
-      url,
-      headers,
-      data
-    };
-  }).catch(error => {
-    if (error instanceof requestError.RequestError) throw error;
-    throw new requestError.RequestError(error.message, 500, {
-      request: requestOptions
-    });
-  });
-}
-
-async function getResponseData(response) {
-  const contentType = response.headers.get("content-type");
-
-  if (/application\/json/.test(contentType)) {
-    return response.json();
-  }
-
-  if (!contentType || /^text\/|charset=utf-8$/.test(contentType)) {
-    return response.text();
-  }
-
-  return getBufferResponse(response);
-}
-
-function toErrorMessage(data) {
-  if (typeof data === "string") return data; // istanbul ignore else - just in case
-
-  if ("message" in data) {
-    if (Array.isArray(data.errors)) {
-      return `${data.message}: ${data.errors.map(JSON.stringify).join(", ")}`;
-    }
-
-    return data.message;
-  } // istanbul ignore next - just in case
-
-
-  return `Unknown error: ${JSON.stringify(data)}`;
-}
-
-function withDefaults(oldEndpoint, newDefaults) {
-  const endpoint = oldEndpoint.defaults(newDefaults);
-
-  const newApi = function (route, parameters) {
-    const endpointOptions = endpoint.merge(route, parameters);
-
-    if (!endpointOptions.request || !endpointOptions.request.hook) {
-      return fetchWrapper(endpoint.parse(endpointOptions));
-    }
-
-    const request = (route, parameters) => {
-      return fetchWrapper(endpoint.parse(endpoint.merge(route, parameters)));
-    };
-
-    Object.assign(request, {
-      endpoint,
-      defaults: withDefaults.bind(null, endpoint)
-    });
-    return endpointOptions.request.hook(request, endpointOptions);
-  };
-
-  return Object.assign(newApi, {
-    endpoint,
-    defaults: withDefaults.bind(null, endpoint)
-  });
-}
-
-const request = withDefaults(endpoint.endpoint, {
-  headers: {
-    "user-agent": `octokit-request.js/${VERSION} ${universalUserAgent.getUserAgent()}`
-  }
-});
-
-exports.request = request;
 //# sourceMappingURL=index.js.map
 
 
@@ -16272,6 +16141,14 @@ module.exports = require("assert");
 
 "use strict";
 module.exports = require("buffer");
+
+/***/ }),
+
+/***/ 2081:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("child_process");
 
 /***/ }),
 
