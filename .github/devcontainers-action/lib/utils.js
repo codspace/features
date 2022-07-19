@@ -128,10 +128,10 @@ function getFeaturesAndPackage(basePath, publishToNPM = false) {
                     };
                     yield (0, exports.writeLocalFile)(packageJsonPath, JSON.stringify(packageJsonObject, undefined, 4));
                     // const tarData = await pac.tarball(featureFolder);
-                    const archiveName = `${sourceInfo.owner}-${sourceInfo.repo}-${f}.tgz`; // TODO: changed this!
-                    const output = child_process.execSync(`npm pack ${featureFolder} --pack-destination ${archiveName}`);
-                    core.info(output.toString());
-                    const output2 = child_process.execSync(`npm publish ${archiveName} --access public`);
+                    // const archiveName = `${sourceInfo.owner}-${sourceInfo.repo}-${f}.tgz`; // TODO: changed this!
+                    const packageName = child_process.execSync(`npm pack ${featureFolder}`);
+                    core.info(`GENERATED: ${packageName.toString()}`);
+                    const output2 = child_process.execSync(`npm publish ${packageName} --access public`);
                     core.info(output2.toString());
                 }
                 // TODO: Old way, GitHub release
