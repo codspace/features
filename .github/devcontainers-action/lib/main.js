@@ -46,7 +46,15 @@ function run() {
         const shouldPublishFeatures = core.getInput('publish-features').toLowerCase() === 'true';
         const shouldPublishTemplates = core.getInput('publish-templates').toLowerCase() === 'true';
         const shouldGenerateDocumentation = core.getInput('generate-docs').toLowerCase() === 'true';
+        // Experimental
+        const shouldTagIndividualFeatures = core.getInput('tag-individual-features').toLowerCase() === 'true';
         const shouldPublishToNPM = core.getInput('publish-to-npm').toLowerCase() === 'true';
+        const shouldPublishReleaseArtifacts = core.getInput('publish-release-artifacts').toLowerCase() === 'true';
+        const opts = {
+            shouldTagIndividualFeatures,
+            shouldPublishToNPM,
+            shouldPublishReleaseArtifacts
+        };
         const featuresBasePath = core.getInput('base-path-to-features');
         const templatesBasePath = core.getInput('base-path-to-templates');
         let featuresMetadata = undefined;
@@ -54,7 +62,7 @@ function run() {
         // -- Package Release Artifacts
         if (shouldPublishFeatures) {
             core.info('Publishing features...');
-            featuresMetadata = yield packageFeatures(featuresBasePath, shouldPublishToNPM);
+            featuresMetadata = yield packageFeatures(featuresBasePath, opts);
         }
         if (shouldPublishTemplates) {
             core.info('Publishing template...');
@@ -74,11 +82,11 @@ function run() {
         yield (0, utils_1.addCollectionsMetadataFile)(featuresMetadata, templatesMetadata);
     });
 }
-function packageFeatures(basePath, publishToNpm = false) {
+function packageFeatures(basePath, opts) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             core.info(`Archiving all features in ${basePath}`);
-            const metadata = yield (0, utils_1.getFeaturesAndPackage)(basePath, publishToNpm);
+            const metadata = yield (0, utils_1.getFeaturesAndPackage)(basePath, opts);
             core.info('Packaging features has finished.');
             return metadata;
         }
