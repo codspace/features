@@ -1,8 +1,8 @@
 name: "Release -- NPM"
 on:
-#   push:
-#     tags:
-#       - "*"
+  push:
+    tags:
+      - "npmmethod*"
   workflow_dispatch:
 
 jobs:

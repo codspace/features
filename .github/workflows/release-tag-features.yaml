@@ -1,8 +1,8 @@
 name: "Release -- tag features"
 on:
-#   push:
-#     tags:
-#       - "*"
+  push:
+    tags:
+      - "repomethod*"
   workflow_dispatch:
 
 jobs:
