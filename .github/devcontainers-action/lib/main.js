@@ -50,10 +50,12 @@ function run() {
         const shouldTagIndividualFeatures = core.getInput('tag-individual-features').toLowerCase() === 'true';
         const shouldPublishToNPM = core.getInput('publish-to-npm').toLowerCase() === 'true';
         const shouldPublishReleaseArtifacts = core.getInput('publish-release-artifacts').toLowerCase() === 'true';
+        const shouldPublishToOCI = core.getInput('publish-to-oci').toLowerCase() === 'true';
         const opts = {
             shouldTagIndividualFeatures,
             shouldPublishToNPM,
-            shouldPublishReleaseArtifacts
+            shouldPublishReleaseArtifacts,
+            shouldPublishToOCI
         };
         const featuresBasePath = core.getInput('base-path-to-features');
         const templatesBasePath = core.getInput('base-path-to-templates');
