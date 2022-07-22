@@ -1,0 +1,21 @@
+name: "Release -- OCI"
+on:
+  push:
+    tags:
+      - "ocimethod*"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: "Publish features to OCI"
+        uses: ./.github/devcontainers-action # TODO: Once 'devcontainers/action' is published, use that.
+        with:
+          publish-features: "true"
+          publish-to-oci: "true" # EXPERIMENTAL!!!!
+          base-path-to-features: "./src"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
