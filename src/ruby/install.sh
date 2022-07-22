@@ -7,6 +7,7 @@
 # Docs: https://github.com/microsoft/vscode-dev-containers/blob/main/script-library/docs/ruby.md
 # Maintainer: The VS Code and Codespaces Teams
 
+# I have made a change!
 RUBY_VERSION=${VERSION:-"latest"}
 
 USERNAME=${USERNAME:-"automatic"}
