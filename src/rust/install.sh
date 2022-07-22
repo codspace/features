@@ -7,7 +7,7 @@
 # Docs: https://github.com/microsoft/vscode-dev-containers/blob/main/script-library/docs/rust.md
 # Maintainer: The VS Code and Codespaces Teams
 
-# I have made a change!
+# I have made another change!
 
 RUST_VERSION=${VERSION:-"latest"}
 RUSTUP_PROFILE=${PROFILE:-"minimal"}

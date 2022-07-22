@@ -7,7 +7,7 @@
 # Docs: https://github.com/microsoft/vscode-dev-containers/blob/main/script-library/docs/go.md
 # Maintainer: The VS Code and Codespaces Teams
 
-# I have made a change!
+# I have made another change!
 
 TARGET_GO_VERSION=${VERSION:-"latest"}
 

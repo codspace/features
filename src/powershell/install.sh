@@ -7,7 +7,7 @@
 # Docs: https://github.com/microsoft/vscode-dev-containers/blob/main/script-library/docs/powershell.md
 # Maintainer: The VS Code and Codespaces Teams
 
-# I have made a change!
+# I have made another change!
 set -e
 
 POWERSHELL_VERSION=${VERSION:-"latest"}
