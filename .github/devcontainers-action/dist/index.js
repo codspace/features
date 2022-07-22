@@ -446,20 +446,21 @@ function pushArtifactToOCI(repositoryOwner, version, featureName, artifactPath) 
     return __awaiter(this, void 0, void 0, function* () {
         const exec = (0, util_1.promisify)(child_process.exec);
         const versions = [version, '1.0', '1']; // TODO: don't hardcode ofc.
-        for (const v in versions) {
+        yield Promise.all(versions.map((v) => __awaiter(this, void 0, void 0, function* () {
+            core.info(`Starting to push artifact (tag ${v}) to OCI...`);
             const ociRepo = `${repositoryOwner}/${featureName}:${v}`;
             try {
                 const cmd = `oras push ghcr.io/${ociRepo} \
-          --manifest-config /dev/null:application/vnd.devcontainers \
-                            ./${artifactPath}:application/vnd.devcontainers.layer.v1+tar`;
+              --manifest-config /dev/null:application/vnd.devcontainers \
+                                ./${artifactPath}:application/vnd.devcontainers.layer.v1+tar`;
                 yield exec(cmd);
-                console.log(`Pushed artifact to '${ociRepo}'`);
+                core.info(`Pushed artifact to '${ociRepo}'`);
             }
             catch (error) {
                 if (error instanceof Error)
                     core.setFailed(`Failed to push '${ociRepo}':  ${error.message}`);
             }
-        }
+        })));
     });
 }
 function loginToGHCR() {
@@ -487,6 +488,9 @@ function getFeaturesAndPackage(basePath, opts) {
         const featureDirs = fs.readdirSync(basePath);
         let metadatas = [];
         const exec = (0, util_1.promisify)(child_process.exec);
+        if (shouldPublishToOCI) {
+            yield loginToGHCR();
+        }
         yield Promise.all(featureDirs.map((f) => __awaiter(this, void 0, void 0, function* () {
             var _a;
             core.info(`feature ==> ${f}`);
@@ -518,7 +522,6 @@ function getFeaturesAndPackage(basePath, opts) {
                 // ---- PUBLISH TO NPM ----
                 if (shouldPublishToOCI) {
                     core.info(`** Publishing to OCI`);
-                    yield loginToGHCR();
                     yield pushArtifactToOCI(sourceInfo.owner, featureMetadata.version, f, archiveName);
                 }
                 // ---- TAG INDIVIDUAL FEATURES ----
