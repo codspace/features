@@ -81,7 +81,7 @@ function run() {
         }
         // -- Programatically add feature/template metadata to collections file.
         core.info('Generating metadata file: devcontainer-collection.json');
-        yield (0, utils_1.addCollectionsMetadataFile)(featuresMetadata, templatesMetadata);
+        yield (0, utils_1.addCollectionsMetadataFile)(featuresMetadata, templatesMetadata, opts);
     });
 }
 function packageFeatures(basePath, opts) {
