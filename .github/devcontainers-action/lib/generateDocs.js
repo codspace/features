@@ -34,9 +34,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateTemplateDocumentation = exports.generateFeaturesDocumentation = void 0;
 const fs = __importStar(require("fs"));
-const github = __importStar(require("@actions/github"));
 const core = __importStar(require("@actions/core"));
 const path = __importStar(require("path"));
+const utils_1 = require("./utils");
 const FEATURES_README_TEMPLATE = `
 # #{Name}
 
@@ -58,7 +58,7 @@ const FEATURES_README_TEMPLATE = `
 
 ---
 
-_Note: This file was auto-generated from the [devcontainer-feature.json](./devcontainer-feature.json)._
+_Note: This file was auto-generated from the [devcontainer-feature.json](#{RepoUrl})._
 `;
 const TEMPLATE_README_TEMPLATE = `
 # #{Name}
@@ -106,12 +106,13 @@ function _generateDocumentation(basePath, readmeTemplate, metadataFile) {
                     core.error(`${metadataFile} for '${f}' does not contain an 'id'`);
                     return;
                 }
-                const ref = github.context.ref;
-                const owner = github.context.repo.owner;
-                const repo = github.context.repo.repo;
+                const srcInfo = (0, utils_1.getGitHubMetadata)();
+                const ref = srcInfo.ref;
+                const owner = srcInfo.owner;
+                const repo = srcInfo.repo;
                 // Add tag if parseable
                 let versionTag = 'latest';
-                if (ref.includes('refs/tags/')) {
+                if (ref && ref.includes('refs/tags/')) {
                     versionTag = ref.replace('refs/tags/', '');
                 }
                 const generateOptionsMarkdown = () => {
@@ -128,6 +129,11 @@ function _generateDocumentation(basePath, readmeTemplate, metadataFile) {
                         .join('\n');
                     return '| Options Id | Description | Type | Default Value |\n' + '|-----|-----|-----|-----|\n' + contents;
                 };
+                let urlToConfig = './devcontainer-feature.json';
+                const basePathTrimmed = basePath.startsWith('./') ? basePath.substring(2) : basePath;
+                if (srcInfo.owner && srcInfo.repo) {
+                    urlToConfig = `https://github.com/${srcInfo.owner}/${srcInfo.repo}/blob/main/${basePathTrimmed}/${f}/devcontainer-feature.json`;
+                }
                 const newReadme = readmeTemplate
                     // Templates & Features
                     .replace('#{Id}', parsedJson.id)
@@ -138,7 +144,8 @@ function _generateDocumentation(basePath, readmeTemplate, metadataFile) {
                     .replace('#{Nwo}', `${owner}/${repo}`)
                     .replace('#{VersionTag}', versionTag)
                     // Templates Only
-                    .replace('#{ManifestName}', (_c = (_b = parsedJson === null || parsedJson === void 0 ? void 0 : parsedJson.image) === null || _b === void 0 ? void 0 : _b.manifest) !== null && _c !== void 0 ? _c : '');
+                    .replace('#{ManifestName}', (_c = (_b = parsedJson === null || parsedJson === void 0 ? void 0 : parsedJson.image) === null || _b === void 0 ? void 0 : _b.manifest) !== null && _c !== void 0 ? _c : '')
+                    .replace('#{RepoUrl}', urlToConfig);
                 // Remove previous readme
                 if (fs.existsSync(readmePath)) {
                     fs.unlinkSync(readmePath);

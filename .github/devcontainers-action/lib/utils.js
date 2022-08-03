@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTemplatesAndPackage = exports.getFeaturesAndPackage = exports.pushCollectionsMetadataToOCI = exports.addCollectionsMetadataFile = exports.tarDirectory = exports.renameLocal = exports.mkdirLocal = exports.writeLocalFile = exports.readLocalFile = void 0;
+exports.getTemplatesAndPackage = exports.getFeaturesAndPackage = exports.pushCollectionsMetadataToOCI = exports.addCollectionsMetadataFile = exports.getGitHubMetadata = exports.tarDirectory = exports.renameLocal = exports.mkdirLocal = exports.writeLocalFile = exports.readLocalFile = void 0;
 const github = __importStar(require("@actions/github"));
 const tar = __importStar(require("tar"));
 const fs = __importStar(require("fs"));
@@ -79,6 +79,7 @@ function getGitHubMetadata() {
     }
     return sourceInformation;
 }
+exports.getGitHubMetadata = getGitHubMetadata;
 function tagFeatureAtVersion(featureMetaData) {
     return __awaiter(this, void 0, void 0, function* () {
         const featureId = featureMetaData.id;
