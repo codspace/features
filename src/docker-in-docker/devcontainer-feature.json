@@ -1,0 +1,50 @@
+{
+    "id": "docker-in-docker",
+    "name": "Docker (Docker-in-Docker)",
+    "description": "Create child containers *inside* a container, independent from the host's docker instance. Installs Docker extension in the container along with needed CLIs.",
+    "options": {
+        "version": {
+            "type": "string",
+            "proposals": [
+                "latest",
+                "none",
+                "20.10"
+            ],
+            "default": "latest",
+            "description": "Select or enter a Docker/Moby Engine version. (Availability can vary by OS version.)"
+        },
+        "moby": {
+            "type": "boolean",
+            "default": true,
+            "description": "Install OSS Moby build instead of Docker CE"
+        },
+        "docker_dash_compose_version": {
+            "type": "string",
+            "enum": [
+                "v1",
+                "v2"
+            ],
+            "default": "v1",
+            "description": "Default version of Docker Compose (v1 or v2)"
+        }
+    },
+    "entrypoint": "/usr/local/share/docker-init.sh",
+    "privileged": true,
+    "containerEnv": {
+        "DOCKER_BUILDKIT": "1"
+    },
+    "extensions": [
+        "ms-azuretools.vscode-docker"
+    ],
+    "mounts": [
+        {
+            "source": "dind-var-lib-docker",
+            "target": "/var/lib/docker",
+            "type": "volume"
+        }
+    ],
+    "install": {
+        "app": "",
+        "file": "install.sh"
+    }
+}
