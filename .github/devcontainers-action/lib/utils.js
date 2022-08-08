@@ -202,7 +202,7 @@ function pushCollectionsMetadataToOCI(collectionJsonPath) {
         try {
             const cmd = `oras push ghcr.io/${ociRepo} \
             --manifest-config /dev/null:application/vnd.devcontainers \
-                        ./${collectionJsonPath}:application/vnd.devcontainers.collection.layer.v1+json
+                        ./${collectionJsonPath}:application/vnd.devcontainers.collection.layer.v1+json \
             --manifest-annotations collection-annotations.json`;
             yield exec(cmd);
             core.info(`Pushed collection metadata to '${ociRepo}'`);
