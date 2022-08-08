@@ -18,7 +18,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           scope: '@codspace'
 
-      - name: "Generate tgz and publish to NPM"
+      - name: "Generate tgz"
         uses: ./.github/devcontainers-action # TODO: Once 'devcontainers/action' is published, use that.
         with:
           publish-features: "true"
