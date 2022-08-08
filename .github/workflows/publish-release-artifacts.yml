@@ -1,4 +1,4 @@
-name: "Release -- NPM"
+name: "Release -- Classic Tarball"
 on:
   push:
     tags:
