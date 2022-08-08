@@ -7,7 +7,7 @@ Installs Ruby, rvm, rbenv, common Ruby utilities, and needed dependencies.
 
 ```json
 "features": {
-        "codspace/features/ruby@latest": {
+        "ghcr.io/codspace/features/ruby:1": {
             "version": "latest"
         }
 }

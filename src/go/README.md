@@ -7,7 +7,7 @@ Installs Go and common Go utilities. Auto-detects latest version and installs ne
 
 ```json
 "features": {
-        "codspace/features/go@latest": {
+        "ghcr.io/codspace/features/go:2": {
             "version": "latest"
         }
 }

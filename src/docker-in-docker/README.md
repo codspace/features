@@ -7,7 +7,7 @@ Create child containers *inside* a container, independent from the host's docker
 
 ```json
 "features": {
-        "codspace/features/docker-in-docker@latest": {
+        "ghcr.io/codspace/features/docker-in-docker:1": {
             "version": "latest"
         }
 }
