@@ -7,7 +7,7 @@ Installs PowerShell along with needed dependencies. Useful for base Dockerfiles 
 
 ```json
 "features": {
-        "codspace/features/powershell@latest": {
+        "ghcr.io/codspace/features/powershell:1": {
             "version": "latest"
         }
 }

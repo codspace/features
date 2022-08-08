@@ -7,7 +7,7 @@ Installs the provided version of Python, as well as PIPX, and other common Pytho
 
 ```json
 "features": {
-        "codspace/features/python@latest": {
+        "ghcr.io/codspace/features/python:1": {
             "version": "latest"
         }
 }
