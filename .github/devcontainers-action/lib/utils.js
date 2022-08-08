@@ -156,7 +156,7 @@ exports.addCollectionsMetadataFile = addCollectionsMetadataFile;
 function pushArtifactToOCI(version, featureName, artifactPath) {
     return __awaiter(this, void 0, void 0, function* () {
         const exec = (0, util_1.promisify)(child_process.exec);
-        const versions = [version, '1.0', '1']; // TODO: don't hardcode ofc.
+        const versions = [version, '1.0', '1', 'latest']; // TODO: Generate semantic versions from 'version'
         const sourceInfo = getGitHubMetadata();
         yield Promise.all(versions.map((v) => __awaiter(this, void 0, void 0, function* () {
             const ociRepo = `${sourceInfo.owner}/${sourceInfo.repo}/${featureName}:${v}`;
@@ -243,7 +243,7 @@ function getFeaturesAndPackage(basePath, opts) {
                     core.setFailed('Could not determine repository owner.');
                     return;
                 }
-                const archiveName = `${f}.tgz`;
+                const archiveName = `devcontainer-feature-${f}.tgz`;
                 // ---- PUBLISH RELEASE ARTIFACTS (classic method) ----
                 if (shouldPublishReleaseArtifacts || shouldPublishToOCI) {
                     core.info(`** Tar'ing feature`);

@@ -33,5 +33,5 @@ jobs:
         with:
           allowUpdates: true # Lets us upload our own artifact from previous step
           artifactErrorsFailBuild: true
-          artifacts: "devcontainer-collection.json"
+          artifacts: "./devcontainer-*"
           token: ${{ secrets.GITHUB_TOKEN }}
