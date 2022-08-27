@@ -6,7 +6,7 @@ on:
 jobs:
   image-info:
     name: Trigger info extraction
-    uses: /codspace/features/.github/workflows/test-something.yml@samruddhikhandale/test-actions
+    uses: codspace/features/.github/workflows/test-something.yml@samruddhikhandale/test-actions
     with:
       testInput1: "${{ github.ref }}"
       testInput3: "from action"
