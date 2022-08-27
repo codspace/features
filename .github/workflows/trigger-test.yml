@@ -1,0 +1,13 @@
+name: Build and push "dev" images
+
+on: 
+  workflow_dispatch:
+
+jobs:
+  image-info:
+    name: Trigger info extraction
+    uses: /codspace/features/.github/workflows/test-something.yml@samruddhikhandale/test-actions
+    with:
+      testInput1: "${{ github.ref }}"
+      testInput3: "from action"
+    secrets: inherit

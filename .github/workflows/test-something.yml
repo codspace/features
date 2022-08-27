@@ -1,0 +1,50 @@
+name: Update version history
+
+on:
+  workflow_dispatch:
+    inputs:
+      testInput1:
+        description: 'Generate cgmanifest.json'
+        required: true
+        default: 'false'
+        type: string
+      testInput2:
+        description: 'Update repository with results'
+        required: true
+        default: 'true'
+        type: string
+  workflow_call:
+    inputs:
+      testInput1:
+        description: 'Release branch or tag'
+        required: true
+        default: 'main'
+        type: string
+      testInput3:
+        description: 'Generate cgmanifest.json'
+        required: true
+        default: 'false'
+        type: string
+
+
+jobs:
+  image_info:
+    name: Update version history
+    if: ${{ github.ref == 'refs/heads/main' || github.event.base_ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+
+    - name: Checkout
+      id: checkout
+      uses: actions/checkout@v2
+
+    - name: Get image info
+      id: Get_image_info
+      run: |
+        set -e
+        echo "testInput1 ${{ inputs.testInput1 }}"
+        echo "testInput2 ${{ inputs.testInput2 }}"
+        echo "testInput3 ${{ inputs.testInput3 }}"
