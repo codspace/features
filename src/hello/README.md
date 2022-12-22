@@ -7,9 +7,9 @@ A hello world feature
 
 ```json
 "features": {
-    "ghcr.io/devcontainers/feature-starter/hello:1": {
-        "version": "latest"
-    }
+        "ghcr.io/codspace/features/hello:1": {
+            "version": "latest"
+        }
 }
 ```
 
@@ -19,8 +19,6 @@ A hello world feature
 |-----|-----|-----|-----|
 | greeting | Select a pre-made greeting, or enter your own | string | hey |
 
-
-
 ---
 
-_Note: This file was auto-generated from the [devcontainer-feature.json](https://github.com/devcontainers/feature-starter/blob/main/src/hello/devcontainer-feature.json).  Add additional notes to a `NOTES.md`._
+_Note: This file was auto-generated from the [devcontainer-feature.json](https://github.com/codspace/features/blob/main/src/hello/devcontainer-feature.json)._
