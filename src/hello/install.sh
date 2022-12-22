@@ -6,12 +6,7 @@ echo "Activating feature 'hello'"
 GREETING=${GREETING:-undefined}
 echo "The provided greeting is: $GREETING"
 
-cat > /usr/local/bin/hello \
-<< EOF
-#!/bin/sh
-RED='\033[0;91m'
-NC='\033[0m' # No Color
-echo "\${RED}${GREETING}, \$(whoami)!\${NC}"
-EOF
+echo "${GREETING}"  > /tmp/hello.txt
+chmod +x /tmp/hello.txt
 
-chmod +x /usr/local/bin/hello
+echo "Fav color from 'color' - $(cat /tmp/color.txt)"

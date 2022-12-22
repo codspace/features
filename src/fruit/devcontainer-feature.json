@@ -1,7 +1,7 @@
 {
     "name": "Favorite, Fruit!",
     "id": "fruit",
-    "version": "1.0.0",
+    "version": "1.0.6",
     "description": "A fav fruit feature",
     "options": {
         "favorite": {
@@ -11,7 +11,7 @@
                 "mango",
                 "pear"
             ],
-            "default": "hey",
+            "default": "mango",
             "description": "Select an existing Fruit, or enter your own"
         }
     },
