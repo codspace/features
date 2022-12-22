@@ -1,5 +1,5 @@
 
-# My Favorite Color (color)
+# My Favorite Color (new-color)
 
 A feature to remind you of your favorite color
 
@@ -7,7 +7,7 @@ A feature to remind you of your favorite color
 
 ```json
 "features": {
-        "ghcr.io/codspace/features/color:1": {
+        "ghcr.io/codspace/features/new-color:1": {
             "version": "latest"
         }
 }
@@ -21,4 +21,4 @@ A feature to remind you of your favorite color
 
 ---
 
-_Note: This file was auto-generated from the [devcontainer-feature.json](https://github.com/codspace/features/blob/main/src/color/devcontainer-feature.json)._
+_Note: This file was auto-generated from the [devcontainer-feature.json](https://github.com/codspace/features/blob/main/src/new-color/devcontainer-feature.json)._

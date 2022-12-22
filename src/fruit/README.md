@@ -17,7 +17,7 @@ A fav fruit feature
 
 | Options Id | Description | Type | Default Value |
 |-----|-----|-----|-----|
-| favorite | Select an existing Fruit, or enter your own | string | hey |
+| favorite | Select an existing Fruit, or enter your own | string | mango |
 
 ---
 
