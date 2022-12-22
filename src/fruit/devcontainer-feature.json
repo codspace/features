@@ -1,0 +1,21 @@
+{
+    "name": "Favorite, Fruit!",
+    "id": "fruit",
+    "version": "1.0.0",
+    "description": "A fav fruit feature",
+    "options": {
+        "favorite": {
+            "type": "string",
+            "proposals": [
+                "apple",
+                "mango",
+                "pear"
+            ],
+            "default": "hey",
+            "description": "Select an existing Fruit, or enter your own"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/codspace/features/hello"
+    ]
+}
