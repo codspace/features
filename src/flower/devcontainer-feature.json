@@ -1,0 +1,21 @@
+{
+    "name": "Hello, flower!",
+    "id": "flower",
+    "version": "1.0.0",
+    "description": "Favorite Flower",
+    "options": {
+        "favoriteFlower": {
+            "type": "string",
+            "proposals": [
+                "rose",
+                "tulip",
+                "sunflower"
+            ],
+            "default": "rose",
+            "description": "Select your favorite flower, or enter your own"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/codspace/features/new-color"
+    ]
+}
