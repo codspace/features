@@ -1,13 +1,13 @@
 
-# Hello, World! (hello)
+# Hello, flower! (flower)
 
-A hello world feature
+Favorite Flower
 
 ## Example Usage
 
 ```json
 "features": {
-        "ghcr.io/codspace/features/hello:1": {
+        "ghcr.io/codspace/features/flower:1": {
             "version": "latest"
         }
 }
@@ -17,8 +17,8 @@ A hello world feature
 
 | Options Id | Description | Type | Default Value |
 |-----|-----|-----|-----|
-| greeting | Select a pre-made greeting, or enter your own | string | hey |
+| favoriteFlower | Select your favorite flower, or enter your own | string | rose |
 
 ---
 
-_Note: This file was auto-generated from the [devcontainer-feature.json](https://github.com/codspace/features/blob/main/src/hello/devcontainer-feature.json)._
+_Note: This file was auto-generated from the [devcontainer-feature.json](https://github.com/codspace/features/blob/main/src/flower/devcontainer-feature.json)._
