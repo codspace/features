@@ -1,6 +1,6 @@
 {
     "id": "powershell",
-    "version": "1.0.12",
+    "version": "1.0.13",
     "name": "PowerShell",
     "description": "Installs PowerShell along with needed dependencies. Useful for base Dockerfiles that often are missing required install dependencies like gpg.",
     "options": {
